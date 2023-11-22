@@ -21,7 +21,7 @@ class test_fileStorage(unittest.TestCase):
         """ Remove storage file at end of tests """
         try:
             os.remove('file.json')
-        except:
+        except FileNotFoundError:
             pass
 
     def test_obj_list_empty(self):
@@ -105,5 +105,11 @@ class test_fileStorage(unittest.TestCase):
     def test_storage_var_created(self):
         """ FileStorage object storage created """
         from models.engine.file_storage import FileStorage
-        print(type(storage))
         self.assertEqual(type(storage), FileStorage)
+
+    def test_delete(self):
+        new = BaseModel()
+        storage.new(new)
+        storage.delete(new)
+        filtered = storage.all(new.to_dict()['__class__'] + new.id)
+        self.assertDictEqual(filtered, {})
